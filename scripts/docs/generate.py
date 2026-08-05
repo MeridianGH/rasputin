@@ -176,6 +176,10 @@ def main():
     homelab_root = script_dir.parent.parent
     docs_dir = homelab_root / "docs"
     
+    # Create output directory if it doesn't exist
+    output_dir = docs_dir / "generated"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
     # Parse compose files
     parser = ComposeParser(homelab_root / "services")
     parser.parse_all()
