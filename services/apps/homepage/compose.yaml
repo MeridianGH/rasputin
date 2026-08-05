@@ -1,0 +1,28 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    networks:
+      - proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./config:/app/config
+      - ./images:/app/public/images:ro
+    environment:
+      HOMEPAGE_ALLOWED_HOSTS: rasputin.pi
+    restart: unless-stopped
+    labels:
+      docs.description: "Homepage for displaying all Docker services running in the homelab, host networking mode"
+
+      traefik.enable: "true"
+      traefik.docker.network: proxy
+
+      traefik.http.routers.homepage.rule: Host(`rasputin.pi`)
+      traefik.http.routers.homepage.entrypoints: websecure
+      traefik.http.routers.homepage.tls: "true"
+
+      traefik.http.services.homepage.loadbalancer.server.port: "3000"
+
+networks:
+  proxy:
+    external: true

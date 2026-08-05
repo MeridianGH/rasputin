@@ -1,0 +1,10 @@
+---
+- Network:
+    - FRITZ!Box:
+       href: https://fritz.box
+       description: Home Networking
+       icon: avm-fritzbox-7590real
+       widget:
+          type: fritzbox
+          url: http://fritz.box
+          fields: ["uptime", "down", "up"]

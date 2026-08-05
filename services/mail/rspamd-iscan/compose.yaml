@@ -1,0 +1,20 @@
+services:
+  rspamd-iscan:
+    container_name: rspamd-iscan
+    image: guestros/rspamd-iscan:latest
+    networks:
+      - proxy
+      - mail_filter
+    volumes:
+      - ../../../.runtime/rspamd-iscan/config.toml:/etc/rspamd-iscan/config.toml:ro
+    depends_on:
+      - rspamd
+    restart: unless-stopped
+    labels:
+      docs.description: "Daemon for fetching mails from an upstream IMAP mailbox, classifying them with rspamd and moving them to folders"
+
+networks:
+  proxy:
+    external: true
+  mail_filter:
+    external: true

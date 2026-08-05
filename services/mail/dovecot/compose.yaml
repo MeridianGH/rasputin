@@ -1,0 +1,21 @@
+services:
+  dovecot:
+    container_name: dovecot
+    image: dovecot/dovecot:latest
+    restart: unless-stopped
+    networks:
+      - mail_archive
+    ports:
+      - "143:31143"
+    environment:
+      USER_PASSWORD: "{PLAIN}${DOVECOT_PASSWORD:?error}"
+    volumes:
+      - ./dovecot.conf:/etc/dovecot/conf.d/custom.conf:ro
+      - ../../../data/dovecot/mail:/srv/vmail
+      - ../../../data/dovecot/indexes/:/var/indexes
+    labels:
+      docs.description: "Local mailserver only used for archiving mails, only accessible via VPN or LAN, no external SMTP"
+
+networks:
+  mail_archive:
+    external: true

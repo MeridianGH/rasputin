@@ -1,0 +1,15 @@
+services:
+  wg-clients:
+    container_name: wg-clients
+    build: .
+    networks:
+      - metrics
+    volumes:
+      - ../../../data/wireguard/wg0.json:/app/data/wg0.json:ro
+    restart: unless-stopped
+    labels:
+      docs.description: "Tiny Python script and server that parses wireguards config and serves a map from VPN IP to readable client name for grafana"
+
+networks:
+  metrics:
+    external: true

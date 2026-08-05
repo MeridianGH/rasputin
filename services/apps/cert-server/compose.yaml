@@ -1,0 +1,31 @@
+services:
+  cert-server:
+    image: python:3.12-alpine
+    container_name: cert-server
+    command: sh -c "cd /cert && python -m http.server 8080"
+    networks:
+      - proxy
+    volumes:
+      - ../../../data/certs/ca/rasputinCA.crt:/cert/rasputinCA.crt:ro
+    restart: unless-stopped
+    labels:
+      docs.description: "Tiny web server that allows LAN clients to download local CA certs for trusting traefik"
+
+      traefik.enable: true
+      traefik.docker.network: proxy
+
+      traefik.http.routers.cert-server.rule: Host(`certs.rasputin.pi`)
+      traefik.http.routers.cert-server.entrypoints: websecure
+      traefik.http.routers.cert-server.tls: true
+
+      traefik.http.services.cert-server.loadbalancer.server.port: 8080
+
+      homepage.group: Tooling
+      homepage.name: Certificate Server
+      homepage.icon: mdi-certificate
+      homepage.href: https://certs.rasputin.pi
+      homepage.description: Local CA Certificates
+
+networks:
+  proxy:
+    external: true

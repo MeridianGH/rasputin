@@ -1,0 +1,52 @@
+services:
+  rspamd:
+    container_name: rspamd
+    image: rspamd/rspamd:latest
+    networks:
+      - proxy
+      - dns
+      - mail_filter
+    volumes:
+      - ./config:/etc/rspamd/local.d
+      - ../../../.runtime/rspamd/worker-controller.inc:/etc/rspamd/local.d/worker-controller.inc
+      - ../../../data/rspamd:/var/lib/rspamd
+    depends_on:
+      - rspamd-redis
+    restart: unless-stopped
+    labels:
+      docs.description: "Local spam filtering used by rspamd-iscan, no actual mail pipeline, no connection to dovecot, needs connection to unbound"
+
+      traefik.enable: true
+      traefik.docker.network: proxy
+
+      traefik.http.routers.rspamd.rule: Host(`rspamd.rasputin.pi`)
+      traefik.http.routers.rspamd.entrypoints: websecure
+      traefik.http.routers.rspamd.tls: true
+
+      traefik.http.services.rspamd.loadbalancer.server.port: 11334
+
+      homepage.group: Mail
+      homepage.name: Rspamd
+      homepage.icon: rspamd
+      homepage.href: https://rspamd.rasputin.pi
+      homepage.description: Spam Filtering
+
+  rspamd-redis:
+    container_name: rspamd-redis
+    image: redis:alpine
+    networks:
+      - mail_filter
+    volumes:
+      - ../../../data/rspamd-redis:/data
+    restart: unless-stopped
+
+volumes:
+  redis-data:
+
+networks:
+  proxy:
+    external: true
+  dns:
+    external: true
+  mail_filter:
+    external: true

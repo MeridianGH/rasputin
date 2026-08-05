@@ -1,0 +1,18 @@
+---
+- logo:
+
+- search:
+    provider: [duckduckgo, google]
+    target: _blank
+    showSearchSuggestions: true
+    placeholder: search…
+
+- openmeteo:
+    # label: Görwihl
+    latitude: 47.6427
+    longitude: 8.0748
+    timezone: Europe/Berlin
+    units: metric
+    cache: 5
+    format:
+      maximumFractionDigits: 1

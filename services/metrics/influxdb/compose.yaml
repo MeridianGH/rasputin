@@ -1,0 +1,51 @@
+services:
+  influxdb:
+    container_name: influxdb
+    image: influxdb:2.7.11
+    networks:
+      - proxy
+      - metrics
+    ports:
+      # Exposed for telegraf
+      - "8086:8086"
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUXDB_USERNAME:?error}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUXDB_PASSWORD:?error}
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_TOKEN:?error}
+      DOCKER_INFLUXDB_INIT_ORG: Pi-hole
+      # Initialize a "telegraf" bucket here because
+      # pihole-influxdb-monitor creates a bucket by itself.
+      DOCKER_INFLUXDB_INIT_BUCKET: telegraf
+    volumes:
+      - ../../../data/influxdb:/var/lib/influxdb2
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "influx", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    labels:
+      docs.description: "Monitoring backend database"
+
+      traefik.enable: "true"
+      traefik.docker.network: proxy
+
+      traefik.http.routers.influxdb.rule: Host(`influxdb.rasputin.pi`)
+      traefik.http.routers.influxdb.entrypoints: websecure
+      traefik.http.routers.influxdb.tls: "true"
+
+      traefik.http.services.influxdb.loadbalancer.server.port: 8086
+
+      homepage.group: Metrics
+      homepage.name: InfluxDB
+      homepage.icon: influxdb
+      homepage.href: https://influxdb.rasputin.pi
+      homepage.description: Metrics Database
+
+networks:
+  proxy:
+    external: true
+  metrics:
+    external: true

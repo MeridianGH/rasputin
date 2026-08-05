@@ -1,0 +1,16 @@
+name: core
+
+include:
+  - ../services/core/pihole/compose.yaml
+  - ../services/core/traefik/compose.yaml
+  - ../services/core/unbound/compose.yaml
+  # - ../services/core/wireguard/compose.yaml
+  - ../services/core/wireguard-client/compose.yaml
+
+networks:
+  proxy:
+    external: true
+  dns:
+    external: true
+  pihole:
+    external: true

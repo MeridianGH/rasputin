@@ -1,0 +1,54 @@
+---
+logpath: stdout
+
+title: Rasputin
+description: Home
+
+background:
+  image: /images/wallpaper.jpg
+  #blur: 2xl
+  saturate: 100
+  brightness: 50
+  opacity: 100
+
+theme: dark
+color: neutral
+iconStyle: theme
+useEqualHeights: true
+headerStyle: clean
+disableCollapse: true
+target: _self
+
+layout:
+  Network:
+    style: row
+    columns: 4
+    icon: mdi-server-network
+  Group1:
+    header: false
+    style: row
+    columns: 2
+    Tooling:
+      icon: mdi-wrench
+    Group2:
+      header: false
+      style: column
+      Metrics:
+        icon: mdi-chart-line
+      Mail:
+        icon: mdi-email
+  Apps:
+    style: row
+    columns: 4
+    icon: mdi-apps
+
+hideVersion: true
+language: en
+
+quicklaunch:
+  searchDescriptions: true
+  hideInternetSearch: false
+  showSearchSuggestions: true
+  searchSuggestionUrl: https://duckduckgo.com/ac/?q=
+  target: _self
+  mobileButtonPosition: top-right

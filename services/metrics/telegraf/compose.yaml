@@ -1,0 +1,25 @@
+services:
+  telegraf:
+    container_name: telegraf
+    image: telegraf:1.34.1
+    network_mode: host
+    environment:
+      INFLUXDB_URL: http://localhost:8086
+      INFLUXDB_TOKEN: ${INFLUXDB_TOKEN:?error}
+      INFLUXDB_ORG: Pi-hole
+      INFLUXDB_BUCKET: telegraf
+      HOST_ETC: /host/etc
+      HOST_PROC: /host/proc
+      HOST_SYS: /host/sys
+      HOST_VAR: /host/var
+      HOST_RUN: /host/run
+      HOST_MOUNT_PREFIX: /host
+    volumes:
+      - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /:/host:ro
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    restart: unless-stopped
+    labels:
+      docs.description: "Exporting system information to InfluxDB, running in host networking mode for monitoring host interfaces"

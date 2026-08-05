@@ -1,0 +1,69 @@
+services:
+  pihole:
+    container_name: pihole
+    hostname: pihole-docker
+    image: pihole/pihole:2026.02.0
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    networks:
+      - proxy
+      - dns
+      - pihole
+    environment:
+      # See: https://docs.pi-hole.net/docker/configuration
+      FTLCONF_dhcp_active: "false"
+      # FTLCONF_dns_cnameRecords: "admin.rasputin.pi,rasputin.pi;wireguard.rasputin.pi,rasputin.pi;traefik.rasputin.pi,rasputin.pi;influxdb.rasputin.pi,rasputin.pi;grafana.rasputin.pi,rasputin.pi;home.rasputin.pi,rasputin.pi;"
+      FTLCONF_misc_dnsmasq_lines: "address=/.rasputin.pi/192.168.188.2"
+      FTLCONF_dns_domain: "fritz.box"
+      FTLCONF_dns_hosts: "192.168.188.2 rasputin.pi"
+      FTLCONF_dns_listeningMode: "all"
+      FTLCONF_dns_revServers: "true,192.168.188.0/24,192.168.188.1,fritz.box"
+      # FTLCONF_dns_upstreams: "1.1.1.1;1.0.0.1;2606:4700:4700::1111;2606:4700:4700::1001;"
+      FTLCONF_dns_upstreams: "unbound;"
+      FTLCONF_webserver_api_password: ${PIHOLE_PASSWORD:?error}
+      FTLCONF_webserver_port: "8080o,8443os,[::]:8080o,[::]:8443os"
+      TZ: "Europe/Berlin"
+    cap_add:
+      - SYS_NICE # Optional, if Pi-hole should get some more processing time
+    restart: unless-stopped
+    volumes:
+      - ./whitelist.sh:/pihole/whitelist.sh
+    post_start:
+      # Whitelist
+      - command: [ "sh", "-c", "/pihole/whitelist.sh" ]
+    labels:
+      docs.description: "Used for local DNS for all machines in network, distributed by router DHCP"
+
+      traefik.enable: "true"
+      # traefik.docker.network: proxy
+
+      traefik.http.routers.pihole.rule: Host(`pihole.rasputin.pi`) || Host(`192.168.188.2`)
+      traefik.http.routers.pihole.entrypoints: websecure
+      traefik.http.routers.pihole.tls: "true"
+
+      traefik.http.services.pihole.loadbalancer.server.port: 8080
+
+      traefik.http.middlewares.pihole-admin.redirectregex.regex: "^https?://pihole.rasputin.pi/?$"
+      traefik.http.middlewares.pihole-admin.redirectregex.replacement: "https://pihole.rasputin.pi/admin"
+      traefik.http.middlewares.pihole-admin.redirectregex.permanent: "true"
+      traefik.http.routers.pihole.middlewares: pihole-admin
+
+      homepage.group: Network
+      homepage.name: Pi-hole
+      homepage.icon: pi-hole
+      homepage.href: https://pihole.rasputin.pi
+      homepage.description: DNS & Ad Blocking
+
+      homepage.widget.type: pihole
+      homepage.widget.url: http://pihole:8080
+      homepage.widget.version: 6
+      homepage.widget.key: ${PIHOLE_PASSWORD}
+
+networks:
+  proxy:
+    external: true
+  dns:
+    external: true
+  pihole:
+    external: true

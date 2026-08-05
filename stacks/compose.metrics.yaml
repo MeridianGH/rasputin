@@ -1,0 +1,16 @@
+name: metrics
+
+include:
+  - ../services/metrics/grafana/compose.yaml
+  - ../services/metrics/influxdb/compose.yaml
+  - ../services/metrics/pihole-influxdb-monitor/compose.yaml
+  - ../services/metrics/telegraf/compose.yaml
+  - ../services/metrics/wg-clients/compose.yaml
+
+networks:
+  proxy:
+    external: true
+  pihole:
+    external: true
+  metrics:
+    external: true

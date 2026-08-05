@@ -1,0 +1,45 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/bookmarks
+
+- Development:
+  - GitHub:
+    - href: https://github.com
+      icon: github-light
+  - Docker Hub:
+    - href: https://hub.docker.com
+      icon: docker
+  - npm:
+    - href: https://www.npmjs.com
+      icon: npm
+  - MDN:
+    - href: https://developer.mozilla.org
+      icon: sh-mozilla
+
+- Entertainment:
+  - Twitch:
+    - href: https://twitch.tv/
+      icon: twitch
+  - YouTube:
+    - href: https://youtube.com/
+      icon: youtube
+  - Reddit:
+    - href: https://reddit.com/
+      icon: reddit
+  - SteamDB:
+    - href: https://steamdb.info
+      icon: sh-steamdb-light
+
+- Tools:
+  - ChatGPT:
+    - href: https://chatgpt.com/?temporary-chat=true
+      icon: chatgpt
+  - Claude:
+    - href: https://claude.ai/new?incognito
+      icon: sh-claude
+  - Cloudflare Speed:
+    - href: https://speed.cloudflare.com
+      icon: cloudflare
+  - homepage Docs:
+    - href: https://gethomepage.dev/
+      icon: homepage

@@ -1,0 +1,39 @@
+services:
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:11.6.0
+    networks:
+      - proxy
+      - metrics
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USERNAME:?error}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:?error}
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /etc/grafana/provisioning/dashboards/dashboard.json
+      GF_PLUGINS_PREINSTALL: yesoreyeram-infinity-datasource
+    volumes:
+      - ./dashboards:/etc/grafana/provisioning/dashboards
+      - ../../../.runtime/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+    restart: unless-stopped
+    labels:
+      docs.description: "Main monitoring dashboard, uses influxdb as datasource"
+
+      traefik.enable: "true"
+      traefik.docker.network: proxy
+
+      traefik.http.routers.grafana.rule: Host(`grafana.rasputin.pi`)
+      traefik.http.routers.grafana.entrypoints: websecure
+      traefik.http.routers.grafana.tls: "true"
+
+      traefik.http.services.grafana.loadbalancer.server.port: 3000
+
+      homepage.group: Metrics
+      homepage.name: Grafana
+      homepage.icon: grafana
+      homepage.href: https://grafana.rasputin.pi
+      homepage.description: Monitoring Dashboards
+
+networks:
+  proxy:
+    external: true
+  metrics:
+    external: true

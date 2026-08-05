@@ -1,0 +1,29 @@
+services:
+  pihole-influxdb-monitor:
+    container_name: pihole-influxdb-monitor
+    build: .
+    networks:
+      - pihole
+      - metrics
+    environment:
+      INTERVAL_SECONDS: 10
+      PIHOLE_ALIAS: pihole
+      PIHOLE_ADDRESS: http://pihole:8080
+      PIHOLE_PASSWORD: ${PIHOLE_PASSWORD:?error}
+      INFLUXDB_ADDRESS: http://influxdb:8086
+      INFLUXDB_TOKEN: ${INFLUXDB_TOKEN:?error}
+      INFLUXDB_ORG: Pi-hole
+      INFLUXDB_BUCKET: pihole
+      INFLUXDB_CREATE_BUCKET: true
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    restart: unless-stopped
+    labels:
+      docs.description: "Custom Python exporter script that fetches data from pihole API and stores them in influxdb"
+
+networks:
+  pihole:
+    external: true
+  metrics:
+    external: true

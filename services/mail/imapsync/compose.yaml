@@ -1,0 +1,25 @@
+services:
+  imapsync:
+    container_name: imapsync
+    build: ../../../services/mail/imapsync
+    networks:
+      - mail_archive
+    environment:
+      SRC_HOST: ${IMAPSYNC_HOST:?error}
+      SRC_USER: ${IMAPSYNC_USERNAME:?error}
+      SRC_PASS: ${IMAPSYNC_PASSWORD:?error}
+      DST_HOST: dovecot
+      DST_PORT: 31143
+      DST_USER: archive
+      DST_PASS: ${DOVECOT_PASSWORD:?error}
+    volumes:
+      - ../../../data/dovecot/mail:/srv/vmail
+    depends_on:
+      - dovecot
+    restart: unless-stopped
+    labels:
+      docs.description: "cron script that fetches mails from an upstream IMAP mailbox and delivers them to dovecot"
+
+networks:
+  mail_archive:
+    external: true

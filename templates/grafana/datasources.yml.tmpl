@@ -1,0 +1,21 @@
+apiVersion: 1
+
+datasources:
+  - name: InfluxDB
+    type: influxdb
+    uid: P951FEA4DE68E13C5
+    access: proxy
+    url: http://influxdb:8086
+    isDefault: true
+    jsonData:
+      version: Flux
+      organization: Pi-hole
+      defaultBucket: pihole
+    secureJsonData:
+      token: ${INFLUXDB_TOKEN}
+
+  - name: "WireGuard Clients"
+    type: yesoreyeram-infinity-datasource
+    uid: P7E58673981EBCC3F
+    url: http://wg-clients:8000/clients.csv
+    isDefault: false

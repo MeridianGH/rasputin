@@ -1,0 +1,17 @@
+name: mail
+
+include:
+  - ../services/mail/dovecot/compose.yaml
+  - ../services/mail/imapsync/compose.yaml
+  - ../services/mail/rspamd/compose.yaml
+  - ../services/mail/rspamd-iscan/compose.yaml
+
+networks:
+  proxy:
+    external: true
+  dns:
+    external: true
+  mail_filter:
+    external: true
+  mail_archive:
+    external: true

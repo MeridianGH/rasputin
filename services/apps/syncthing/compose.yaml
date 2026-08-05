@@ -1,0 +1,38 @@
+services:
+  syncthing:
+    image: lscr.io/linuxserver/syncthing:latest
+    container_name: syncthing
+    hostname: syncthing-docker
+    environment:
+      PUID: "1000"
+      PGID: "1000"
+      TZ: "Europe/Berlin"
+    volumes:
+      - ../../../data/syncthing:/config
+      - /mnt/nas/syncthing:/data
+    ports:
+      #- "22000:22000/tcp"
+      #- "22000:22000/udp"
+      - "21027:21027/udp"
+    networks:
+      - proxy
+    restart: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "proxy"
+
+      traefik.http.routers.syncthing.rule: "Host(`syncthing.rasputin.pi`)"
+      traefik.http.routers.syncthing.entrypoints: "websecure"
+      traefik.http.routers.syncthing.tls: "true"
+
+      traefik.http.services.syncthing.loadbalancer.server.port: "8384"
+
+      homepage.group: Apps
+      homepage.name: Syncthing
+      homepage.icon: syncthing
+      homepage.href: https://syncthing.rasputin.pi
+      homepage.description: File Synchronization
+
+networks:
+  proxy:
+    external: true

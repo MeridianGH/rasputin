@@ -1,0 +1,6 @@
+tls:
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /certs/rasputin.pi.pem
+        keyFile: /certs/rasputin.pi.key

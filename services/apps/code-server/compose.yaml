@@ -1,0 +1,36 @@
+services:
+  code-server:
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: code-server
+    networks:
+      - proxy
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - PASSWORD=${CODE_SERVER_PASSWORD:?error}
+      - SUDO_PASSWORD=${CODE_SERVER_SUDO_PASSWORD:?error}
+      - PROXY_DOMAIN=code.rasputin.pi
+      - DEFAULT_WORKSPACE=/config/workspace
+      - PWA_APPNAME=code-server
+    volumes:
+      - ../../../data/code-server:/config
+      - ../../..:/config/workspace
+    restart: unless-stopped
+    labels:
+      docs.description: "VSCode server for debugging and working on the homelab from any device"
+
+      traefik.enable: "true"
+      traefik.docker.network: proxy
+
+      traefik.http.routers.code-server.rule: Host(`code.rasputin.pi`)
+      traefik.http.routers.code-server.entrypoints: websecure
+      traefik.http.routers.code-server.tls: "true"
+
+      traefik.http.services.code-server.loadbalancer.server.port: 8443
+
+      homepage.group: Tooling
+      homepage.name: Code Server
+      homepage.icon: coder-light
+      homepage.href: https://code.rasputin.pi
+      homepage.description: Browser IDE

@@ -1,0 +1,64 @@
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - ../../../data/homeassistant:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+    labels:
+      docs.description: "Home Assistant instance, running in host networking mode"
+
+      traefik.enable: "true"
+      traefik.http.services.homeassistant.loadbalancer.server.port: 8123
+
+      traefik.http.routers.ha-internal.rule: Host(`home.rasputin.pi`)
+      traefik.http.routers.ha-internal.entrypoints: websecure
+      traefik.http.routers.ha-internal.tls: "true"
+      traefik.http.routers.ha-internal.service: homeassistant
+
+      traefik.http.routers.ha-external.rule: Host(`${HOMEASSISTANT_HOST:?error}`)
+      traefik.http.routers.ha-external.entrypoints: websecure
+      traefik.http.routers.ha-external.tls.certresolver: letsencrypt
+      traefik.http.routers.ha-external.service: homeassistant
+      traefik.http.routers.ha-external.middlewares: ha-sec
+      traefik.http.middlewares.ha-sec.headers.sslRedirect: "true"
+      traefik.http.middlewares.ha-sec.headers.stsSeconds: "63072000"
+
+      homepage.group: Apps
+      homepage.name: Home Assistant
+      homepage.icon: home-assistant
+      homepage.href: https://home.rasputin.pi
+      homepage.description: Home Automation
+
+  # matter-server:
+  #   image: ghcr.io/matter-js/python-matter-server:stable
+  #   container_name: matter-server
+  #   restart: unless-stopped
+  #   network_mode: host
+  #   security_opt:
+  #     - apparmor:unconfined
+  #   volumes:
+  #     - ../../../data/matter-server:/data
+  #     - /run/dbus:/run/dbus:ro
+
+  matterjs-server:
+    container_name: matterjs-server
+    image: ghcr.io/matter-js/matterjs-server:latest
+    read_only: true
+    network_mode: host
+    restart: unless-stopped
+    # Optional Node.js heap hint. No default — size depends on the number of
+    # commissioned nodes. See docs/docker.md "Node.js Memory Limit".
+    # environment:
+    #   NODE_OPTIONS: "--max-old-space-size=512"
+    volumes:
+      - "../../../data/matterjs-server:/data"
+    environment:
+      PRIMARY_INTERFACE: eth0
+    labels:
+      docs.description: "Used for matter support, in the same compose file as homeassistant"
+      
