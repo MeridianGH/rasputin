@@ -2,12 +2,33 @@ site_name: Rasputin
 site_description: A personal homelab repository for managing and documenting home infrastructure and services.
 site_url: https://MeridianGH.github.io/rasputin/
 
+repo_url: https://github.com/MeridianGH/rasputin
+repo_name: MeridianGH/rasputin
+
 theme:
   name: material
+  palette:
+    - scheme: slate
+      primary: red
+      accent: red
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+  icon:
+    repo: fontawesome/brands/git-alt
 
 nav:
   - Home: index.md
-  - Initial setup: initial-setup.md
-  - Stacks & Services: generated/services.md
-  - Networking: generated/networking.md
-  - Local debugging: generated/local-debugging.md
+
+  - Initial setup:
+    - Initial setup: initial-setup.md
+
+  - Infrastructure:
+    - Stacks & Services: generated/services.md
+    - Networking: generated/networking.md
+
+  - Development:
+    - Local debugging: generated/local-debugging.md
