@@ -1,5 +1,31 @@
 # Networking
 
+Services communicate through dedicated Docker networks.
+
+The main goals of this approach are:
+
+- Keep internal communication isolated
+- Allow services to discover each other without exposing unnecessary ports
+- Provide controlled access through the reverse proxy
+
+External traffic follows this path:
+
+```text
+Internet
+   |
+   v
+Router / Firewall
+   |
+   v
+Reverse Proxy
+   |
+   +--> Applications
+   |
+   +--> Mail Services
+```
+
+Internal service communication happens through Docker networks.
+
 ## Networks
 | Network        | Purpose                                              |
 | -------------- | ---------------------------------------------------- |

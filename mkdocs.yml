@@ -20,6 +20,13 @@ theme:
   icon:
     repo: fontawesome/brands/git-alt
 
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
 nav:
   - Home: index.md
 
@@ -27,8 +34,11 @@ nav:
     - Initial setup: initial-setup.md
 
   - Infrastructure:
+    - Architecture: architecture.md
     - Stacks & Services: generated/services.md
     - Networking: generated/networking.md
 
-  - Development:
+  - Operations:
+    - Environment Secrets: environment-secrets.md
+    - Homelab CLI: homelab-cli.md
     - Local debugging: generated/local-debugging.md
